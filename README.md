@@ -134,11 +134,4 @@ This project is developed for educational purposes as part of BAI13123 Mobile Ap
 For technical support or questions about this project, please contact the development team or create an issue in this repository.
 
 
-This README provides:
-- ✅ **Professional presentation** with badges and clear structure
-- ✅ **Complete setup instructions** for other developers
-- ✅ **Technical overview** of your Ionic React stack
-- ✅ **Feature documentation** matching what you built
-- ✅ **Team information** as required
-- ✅ **Mobile build instructions** for Android/iOS
 
