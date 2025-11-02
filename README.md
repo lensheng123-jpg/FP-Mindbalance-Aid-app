@@ -1,4 +1,4 @@
-# MindBalance Aid - Mental Wellness Tracker
+# MindBalance Aid  - Mental Wellness Tracker
 
 A comprehensive mental wellness tracking mobile application built with **Ionic React + TypeScript**, featuring mood tracking, stress monitoring, mindfulness exercises, and personalized insights.
 
