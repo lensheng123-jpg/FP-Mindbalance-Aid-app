@@ -1,31 +1,41 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
+import { initializeFirestore, persistentLocalCache } from "firebase/firestore";
+import { getAuth } from "firebase/auth" ;
+import { getStorage } from "firebase/storage" ; // ADD THIS IMPORT
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyADtOh_rp-HFAxnjozZ1i7zVBE59bNXEWI",
-  authDomain: "mindbalanceaid-dd001.firebaseapp.com",
-  projectId: "mindbalanceaid-dd001",
-  storageBucket: "mindbalanceaid-dd001.firebasestorage.app",
-  messagingSenderId: "1083821581583",
-  appId: "1:1083821581583:web:0e9363b9067ea56e904a7a",
-  measurementId: "G-DN67LF4WN9"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
+// ADD ERROR HANDLING HERE
+const requiredEnvVars = ['VITE_FIREBASE_API_KEY', 'VITE_FIREBASE_AUTH_DOMAIN', 'VITE_FIREBASE_PROJECT_ID', 'VITE_FIREBASE_STORAGE_BUCKET', 'VITE_FIREBASE_MESSAGING_SENDER_ID', 'VITE_FIREBASE_APP_ID'];
+
+for (const envVar of requiredEnvVars) {
+  if (!import.meta.env[envVar]) {
+    throw new Error(`Missing required environment variable: ${envVar}`);
+  }
+}
+
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+getAnalytics(app);
 
 console.log("Project ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
+console.log ( "Storage Bucket:" , import . meta . env . VITE_FIREBASE_STORAGE_BUCKET ) ; // Add this log
 
 
-export const db = getFirestore(app);
+// Initialize Firestore with persistent cache
+export const auth = getAuth ( app ) ;
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache() // offline persistence enabled
+});
+export const storage = getStorage ( app ) ;
+
 export default app;
-
-

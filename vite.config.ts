@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 
+// @ts-ignore: Resolve legacy plugin types under current moduleResolution
 import legacy from '@vitejs/plugin-legacy'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -10,6 +11,10 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  build: {
+    target: 'es2020',
+    chunkSizeWarningLimit: 2000, // Increase from default 500 kB
+  },
   test: {
     globals: true,
     environment: 'jsdom',
