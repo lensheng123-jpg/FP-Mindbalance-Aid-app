@@ -21,6 +21,8 @@ import StressTrendChart from "../components/StressTrendChart";
 import ProFeatures from "../theme/ProFeatures";
 import { isWeb } from '../utils/PlatformUtils';
 import { Capacitor } from "@capacitor/core";
+import { auth } from "../firebaseConfig";
+
 
 export default function Home() {
   const history = useHistory();
@@ -59,7 +61,7 @@ export default function Home() {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await auth.signOut();
       history.replace('/login');
     } catch (error) {
       console.error('Logout error:', error);
