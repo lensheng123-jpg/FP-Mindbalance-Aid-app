@@ -3,7 +3,6 @@ import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEma
 import { auth } from '../firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
-import storage from '../Storage'; // ADD THIS IMPORT
 
 interface AuthContextType {
   user: User | null;
@@ -71,24 +70,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    // RESET THEME BEFORE LOGGING OUT
-    try {
-      // Remove all theme classes from document body
-      document.body.classList.remove('theme-default', 'theme-dark', 'theme-blue', 'theme-green', 'theme-purple');
-      // Add default theme class
-      document.body.classList.add('theme-default');
-      
-      // Clear any theme storage for the current user
-      if (user) {
-        await storage.remove(`theme_${user.uid}`);
-      }
-      
-      console.log('Theme reset to default during logout');
-    } catch (error) {
-      console.error('Error resetting theme during logout:', error);
-    }
-    
-    // Now perform the actual logout
+    // Clean and simple - just sign out
+    // Let ThemeContext handle theme management
     await signOut(auth);
   };
 
