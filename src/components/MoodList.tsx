@@ -8,7 +8,7 @@ import { collection, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc, getC
 import { db } from "../firebaseConfig";
 import storage from "../Storage";
 import { useMonetization } from "../theme/MonetizationContext";
-import { editPhoto } from "../theme/CameraService";
+import { editPhoto } from "../Services/CameraService";
 
 interface MoodEntry {
   id: string;
