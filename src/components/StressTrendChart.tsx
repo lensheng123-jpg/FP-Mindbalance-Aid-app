@@ -122,7 +122,7 @@ export default function StressTrendChart({ userId }: Props) {
       {/* Chart */}
       <div style={{ width: "100%", height: 300, marginTop: "1rem" }}>
         <ResponsiveContainer>
-          <LineChart data={aggregatedData}>
+       <LineChart data={aggregatedData} margin = {{ top: 10, right: 50, left: -10, bottom: 25 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="period" />
             <YAxis domain={[1, 10]} />
