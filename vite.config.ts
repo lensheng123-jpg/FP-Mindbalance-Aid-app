@@ -9,15 +9,18 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [
     react(),
-    legacy()
+    legacy({
+      // ✅ explicitly specify targets here instead of build.target
+      targets: ['defaults', 'not IE 11'],
+    }),
   ],
   build: {
-    target: 'es2020',
-    chunkSizeWarningLimit: 2000, // Increase from default 500 kB
+    // ❌ remove `target` — the legacy plugin now handles it
+    chunkSizeWarningLimit: 2000, // keep your custom warning limit
   },
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
-  }
+  },
 })
