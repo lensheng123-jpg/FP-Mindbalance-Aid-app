@@ -297,7 +297,8 @@ export default function Mindfulness() {
             <div style={{ display: 'flex', gap: '8px' }}>
               <IonButton 
                 size="small" 
-                fill="outline"
+                fill="solid"
+                color= "primary" // Automatically uses the Ionic theme color.
                 onClick={() => startTimer(3)}
                 disabled={isActive}
                 style={{
@@ -311,7 +312,8 @@ export default function Mindfulness() {
               
               <IonButton 
                 size="small" 
-                fill="outline"
+                fill="solid"
+                color= "primary" // Automatically uses the Ionic theme color.
                 onClick={() => startTimer(7)}
                 disabled={isActive}
                 style={{
