@@ -322,7 +322,7 @@ const CustomThemes: React.FC = () => {
             <div style={{ display: 'flex', gap: '8px' }}>
               <IonButton 
                 size="small" 
-                fill="outline" 
+                fill="solid" 
                 expand="block"
                 routerLink="/home"
                 style={{ fontSize: '12px', height: '32px' }}
@@ -342,14 +342,32 @@ const CustomThemes: React.FC = () => {
             </div>
           </IonCardContent>
         </IonCard>
+<IonAlert
+  isOpen={showSuccessAlert}
+  onDidDismiss={() => setShowSuccessAlert(false)}
+  header="Theme Applied!"
+  message={`Your theme has been changed to ${themes.find(t => t.id === selectedTheme)?.name}`}
+  buttons={[
+    {
+      text: 'OK',
+      role: 'cancel',
+      cssClass: currentTheme === 'dark' ? 'white-ok' : ''
+    }
+  ]}
+  cssClass="custom-theme-alert"
+/>
 
-        <IonAlert
-          isOpen={showSuccessAlert}
-          onDidDismiss={() => setShowSuccessAlert(false)}
-          header="Theme Applied!"
-          message={`Your theme has been changed to ${themes.find(t => t.id === selectedTheme)?.name}`}
-          buttons={['OK']}
-        />
+{currentTheme === 'dark' && (
+  <style>
+    {`
+      .custom-theme-alert .alert-button.white-ok {
+        color: white !important;
+        font-weight: 600;
+      }
+    `}
+  </style>
+)}
+
       </IonContent>
     </IonPage>
   );
