@@ -69,11 +69,20 @@ export default function AddMood({ userId }: Props) {
     setAlertMessage("Photo removed.");
   };
 
+  const handleRefresh = () => {
+  setSelectedMood(null);
+  setNote("");
+  setStress(undefined);
+  setPhotoData(null);
+  setUploadProgress("");
+  setAlertMessage("Form has been refreshed!");
+};
   const handleSubmit = async () => {
     if (!selectedMood) {
       setAlertMessage("Please select a mood!");
       return;
     }
+
 
     if (!note || note.trim() === "") {
       setAlertMessage("Please enter a note before saving.");
@@ -219,14 +228,19 @@ export default function AddMood({ userId }: Props) {
 
       {/* Photo Section - UPDATED WITH CONTROLS */}
       <div style={{ margin: '20px 0' }}>
-        <IonButton 
-          expand="block" 
-          fill="outline" 
-          onClick={handleTakePhoto}
-          disabled={uploadingPhoto || saving}
-        >
-          {uploadingPhoto ? <IonSpinner /> : '📷 Add Photo to Mood'}
-        </IonButton>
+       <IonButton 
+  expand="block" 
+  color="primary"
+  style={{
+    background: 'var(--ion-color-primary)',
+    color: 'var(--ion-color-primary-contrast)',
+  }}
+  onClick={handleTakePhoto}
+  disabled={uploadingPhoto || saving}
+>
+  {uploadingPhoto ? <IonSpinner /> : '📷 Add Photo to Mood'}
+</IonButton>
+
 
         {photoData && (
           <div style={{ textAlign: 'center', marginTop: '10px',width: '150px',
@@ -290,7 +304,18 @@ export default function AddMood({ userId }: Props) {
       >
         {saving ? <IonSpinner /> : 'Save Mood'}
       </IonButton>
-
+{/* Refresh Button */}
+<IonButton
+  expand="block"
+  style={{
+    background: 'var(--ion-color-primary)',
+    color: 'var(--ion-color-primary-contrast)',
+  }}
+  onClick={handleRefresh}
+  disabled={saving}
+>
+🔄REFRESH
+</IonButton>
       <IonAlert
         isOpen={alertMessage !== null}
         onDidDismiss={() => setAlertMessage(null)}
