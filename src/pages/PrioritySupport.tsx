@@ -443,7 +443,8 @@ const PrioritySupport: React.FC = () => {
             
             <IonButton 
               size="small" 
-              fill="outline" 
+              fill="solid" 
+              color= "primary" // Automatically uses the Ionic theme color.
               expand="block"
               routerLink="/home"
               style={{ fontSize: '12px', height: '32px' }}
