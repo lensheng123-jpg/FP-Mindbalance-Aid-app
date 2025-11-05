@@ -441,17 +441,7 @@ const PrioritySupport: React.FC = () => {
               <strong>Response:</strong> 1-2 hours (Pro users)
             </div>
             
-            <IonButton 
-              size="small" 
-              fill="solid" 
-              color= "primary" // Automatically uses the Ionic theme color.
-              expand="block"
-              routerLink="/home"
-              style={{ fontSize: '12px', height: '32px' }}
-            >
-              <IonIcon icon={arrowBack} slot="start" style={{ fontSize: '12px' }} />
-              Back to Home
-            </IonButton>
+           
           </IonCardContent>
         </IonCard>
 
