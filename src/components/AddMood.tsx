@@ -264,25 +264,6 @@ export default function AddMood({ userId }: Props) {
 
               }} 
             />
-            
-            {/* Photo Control Buttons */}
-            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-              <IonButton 
-                size="small" 
-                color="warning"
-                onClick={handleEditPhoto}
-                disabled={uploadingPhoto}
-              >
-                Edit Photo
-              </IonButton>
-              <IonButton 
-                size="small" 
-                color="danger" 
-                onClick={handleRemovePhoto}
-              >
-                Remove Photo
-              </IonButton>
-            </div>
           </div>
         )}
 
