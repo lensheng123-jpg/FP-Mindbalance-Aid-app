@@ -324,16 +324,6 @@ const CustomThemes: React.FC = () => {
                 size="small" 
                 fill="solid" 
                 expand="block"
-                routerLink="/home"
-                style={{ fontSize: '12px', height: '32px' }}
-              >
-                <IonIcon icon={arrowBack} slot="start" style={{ fontSize: '12px' }} />
-                Back Home
-              </IonButton>
-              <IonButton 
-                size="small" 
-                fill="solid" 
-                expand="block"
                 onClick={() => setTheme('default')}
                 style={{ fontSize: '12px', height: '32px' }}
               >
