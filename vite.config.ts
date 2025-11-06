@@ -10,17 +10,18 @@ export default defineConfig({
   plugins: [
     react(),
     legacy({
-      // ✅ explicitly specify targets here instead of build.target
       targets: ['defaults', 'not IE 11'],
-    }),
+      modernTarget: 'es2020', // Explicitly set modern bundle target
+      modernPolyfills: true
+    })
   ],
+
   build: {
-    // ❌ remove `target` — the legacy plugin now handles it
-    chunkSizeWarningLimit: 2000, // keep your custom warning limit
+    chunkSizeWarningLimit: 2000, // Increase from default 500 kB
   },
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
-  },
+  }
 })
