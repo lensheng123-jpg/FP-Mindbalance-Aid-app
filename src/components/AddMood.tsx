@@ -3,7 +3,7 @@ import { IonButton, IonInput, IonItem, IonLabel, IonGrid, IonRow, IonCol, IonAle
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import storage from "../Storage";
-import { takePhoto, uploadToCloudinary, editPhoto } from "../Services/CameraService"; // Updated imports
+import { takePhoto, uploadToCloudinary } from "../Services/CameraService"; // Updated imports
 
 interface Props {
   userId: string;
