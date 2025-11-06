@@ -45,30 +45,7 @@ export default function AddMood({ userId }: Props) {
     setUploadingPhoto(false);
   };
 
-  // ADD THIS: Edit photo function
-  const handleEditPhoto = async () => {
-    setUploadingPhoto(true);
-    try {
-      const newPhotoUrl = await editPhoto(photoData);
-      if (newPhotoUrl) {
-        setPhotoData(newPhotoUrl);
-        setAlertMessage("Photo updated successfully!");
-      } else {
-        setAlertMessage("Failed to update photo.");
-      }
-    } catch (error) {
-      console.error("Photo edit error:", error);
-      setAlertMessage("Error updating photo.");
-    }
-    setUploadingPhoto(false);
-  };
-
-  // ADD THIS: Remove photo function
-  const handleRemovePhoto = () => {
-    setPhotoData(null);
-    setAlertMessage("Photo removed.");
-  };
-
+ 
   const handleRefresh = () => {
   setSelectedMood(null);
   setNote("");
