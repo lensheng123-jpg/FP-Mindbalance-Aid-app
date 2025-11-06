@@ -464,7 +464,7 @@ const navigateToMindfulness = () => {
               expand="block" 
               size="small" 
               onClick={handleScheduleReminder}
-              color="primary"
+              color="medium"
               style={{ marginBottom: '8px', fontSize: '0.8rem' }}
               disabled={loading}
             >
