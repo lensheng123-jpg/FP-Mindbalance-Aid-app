@@ -1,35 +1,53 @@
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Capacitor } from '@capacitor/core';
 
-// CHANGED: New channel ID to force recreation with proper sound
+// Use a consistent channel ID
 const CHANNEL_ID = 'mood-reminders-sound';
 
-// Completely rewritten channel creation
+// FIXED: More aggressive channel creation
 const createNotificationChannel = async () => {
   if (Capacitor.getPlatform() === 'android') {
     try {
-      console.log('🔊 Creating notification channel with sound...');
+      console.log('🔊 Ensuring notification channel with sound...');
       
-      // Use a completely new approach for sound
+      // First, try to delete existing channel to ensure clean state
+      try {
+        await LocalNotifications.deleteChannel({ id: CHANNEL_ID });
+        console.log('🗑️ Old channel deleted');
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } catch (deleteError) {
+        console.log('ℹ️ No old channel to delete');
+      }
+      
+      // Create fresh channel with MAX importance and sound
       await LocalNotifications.createChannel({
         id: CHANNEL_ID,
-        name: 'Mood Reminders with Sound',
-        description: 'Reminders for logging your daily mood with sound',
-        importance: 5, // MAX importance - ensures sound plays
-        sound: undefined, // CHANGED: Let Android use default sound
+        name: 'Mood Reminders URGENT',
+        description: 'Urgent mood reminders with sound',
+        importance: 5, // MAX importance - THIS IS CRITICAL
         vibration: true,
         visibility: 1, // Public
         lights: true,
         lightColor: '#FF0000',
-        // CHANGED: Remove sound property and let system handle it
+        sound: 'default' // Explicit sound
       });
       
-      console.log('✅ Notification channel created with MAX importance');
+      console.log('✅ Notification channel created WITH SOUND');
       
-      // Verify channel was created properly
-      const channels = await LocalNotifications.listChannels();
-      const ourChannel = channels.channels.find(ch => ch.id === CHANNEL_ID);
-      console.log('🔊 Channel verification:', ourChannel);
+      // Test the channel immediately
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: 'Channel Test 🔊',
+            body: 'Testing sound channel!',
+            id: 777,
+            schedule: { at: new Date(Date.now() + 3000) }, // 3 seconds
+            channelId: CHANNEL_ID,
+            sound: 'default',
+            smallIcon: 'ic_stat_icon'
+          }
+        ]
+      });
       
     } catch (error) {
       console.error('❌ Error creating notification channel:', error);
@@ -37,6 +55,7 @@ const createNotificationChannel = async () => {
   }
 };
 
+// FIXED: Use exact time scheduling that actually works
 export const scheduleDailyReminder = async () => {
   try {
     console.log('📅 Attempting to schedule daily reminder...');
@@ -45,14 +64,31 @@ export const scheduleDailyReminder = async () => {
     const permissionStatus = await LocalNotifications.requestPermissions();
     
     if (permissionStatus.display !== 'granted') {
-      alert('Please enable notifications in your device settings to use reminder features.');
+      alert('❌ Please enable notifications in your device settings.');
       return false;
     }
 
-    // Create channel for Android
+    // FIX: Recreate channel FIRST to ensure sound works
     await createNotificationChannel();
+    
+    // Wait for channel to be ready
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Schedule new reminder - CHANGED: Remove sound property
+    // Cancel any existing reminder first
+    await LocalNotifications.cancel({
+      notifications: [{ id: 1 }]
+    });
+
+    // Calculate time 2 minutes from now
+    const now = new Date();
+    const inOneMinute = new Date(now.getTime() + 60000); // 1 minute
+    
+    const scheduledTime = inOneMinute.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+
+    // FIX: Use exact datetime for first notification + daily repeat
     await LocalNotifications.schedule({
       notifications: [
         {
@@ -60,136 +96,64 @@ export const scheduleDailyReminder = async () => {
           body: 'Time to log your daily mood! 📊',
           id: 1,
           schedule: { 
-            every: 'day',
-            on: { hour: 19, minute: 0 }
+            at: inOneMinute, // Exact time for first notification
+            every: 'day' // Repeat daily from that time
           },
-          // CHANGED: Remove sound property - let channel handle it
           channelId: CHANNEL_ID,
           extra: {
             redirectTo: 'addMood'
           },
-          smallIcon: 'ic_stat_icon', // Make sure this exists
-          iconColor: '#FF0000'
+          smallIcon: 'ic_stat_icon',
+          iconColor: '#FF0000',
+          sound: 'default' // Explicitly set sound
         }
       ]
     });
     
-    alert('✅ Daily reminder scheduled for 7 PM!');
-    return true;
+    // Wait for scheduling to complete
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Verify the notification was scheduled
+    const pending = await LocalNotifications.getPending();
+    const isScheduled = pending.notifications.some(notif => notif.id === 1);
+    
+    if (isScheduled) {
+      alert(`✅ Daily reminder scheduled!\n\nFirst notification in 1 minute (at ${scheduledTime}), then daily at that same time.\n\n• Keep app open or in background\n• Check device volume\n• Wait exactly 1 minute`);
+    } else {
+      alert('❌ Failed to schedule. Try "Cancel All" first, then schedule again.');
+    }
+    
+    return isScheduled;
   } catch (error) {
     console.error('❌ Notification scheduling failed:', error);
-    alert('Failed to schedule reminder: ' + error);
+    alert('Failed to schedule: ' + error);
     return false;
   }
 };
 
-export const testNotification = async () => {
-  try {
-    console.log('🔔 Testing notification with sound...');
-    
-    const permissionStatus = await LocalNotifications.requestPermissions();
-    
-    if (permissionStatus.display !== 'granted') {
-      alert('Please enable notifications to test.');
-      return false;
-    }
-
-    await createNotificationChannel();
-
-    // CHANGED: Use different approach for sound
-    await LocalNotifications.schedule({
-      notifications: [
-        {
-          title: 'Test Notification 🔊',
-          body: 'You should hear sound and feel vibration!',
-          id: 999,
-          schedule: { at: new Date(Date.now() + 1000) }, // 1 second
-          // CHANGED: No sound property - rely on channel configuration
-          channelId: CHANNEL_ID,
-          extra: { test: true },
-          smallIcon: 'ic_stat_icon',
-          iconColor: '#FF0000'
-        }
-      ]
-    });
-    
-    alert('✅ Test notification scheduled! Should appear in 1 second with sound.');
-    return true;
-  } catch (error) {
-    console.error('❌ Test notification failed:', error);
-    alert('Test notification failed: ' + error);
-    return false;
-  }
-};
-
-// NEW: Force recreate channel with sound
-export const recreateChannelWithSound = async () => {
-  if (Capacitor.getPlatform() === 'android') {
-    try {
-      console.log('🔄 Force recreating channel with sound...');
-      
-      // Try multiple channel creation approaches
-      
-      // Approach 1: Default sound
-      await LocalNotifications.createChannel({
-        id: 'mood-reminders-urgent',
-        name: 'Mood Reminders URGENT',
-        description: 'Urgent mood reminders with sound',
-        importance: 5, // MAX
-        sound: undefined, // Let system choose default
-        vibration: true,
-        visibility: 1,
-        lights: true,
-        lightColor: '#FF0000'
-      });
-      
-      // Approach 2: With specific sound
-      await LocalNotifications.createChannel({
-        id: 'mood-reminders-alert',
-        name: 'Mood Reminders ALERT',
-        description: 'Alert mood reminders',
-        importance: 5,
-        vibration: true,
-        visibility: 1,
-        lights: true,
-        lightColor: '#FF0000'
-        // No sound property - system default
-      });
-      
-      console.log('✅ Multiple channels created for sound testing');
-      alert('✅ Notification channels recreated! Try test notification now.');
-      return true;
-    } catch (error) {
-      console.error('❌ Error recreating channels:', error);
-      alert('Error recreating channels: ' + error);
-      return false;
-    }
-  }
-  return false;
-};
-
-// Keep your existing cancellation and other functions...
 export const cancelAllNotifications = async () => {
   try {
     console.log('🗑️ Cancelling all notifications...');
     
-    // Simple approach that works
     await LocalNotifications.cancel({
-      notifications: [{ id: 1 }, { id: 999 }]
+      notifications: [{ id: 1 }, { id: 777 }]
     });
     
-    alert('✅ All notifications cancelled!');
+    // Wait and verify
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const pending = await LocalNotifications.getPending();
+    
+    if (pending.notifications.length === 0) {
+      alert('✅ All notifications cancelled!');
+    } else {
+      alert(`❌ Still ${pending.notifications.length} notifications pending.`);
+    }
+    
     return true;
   } catch (error) {
     console.error('❌ Error cancelling notifications:', error);
-    
-    if (error instanceof Error && error.message.includes('notifications array')) {
-      alert('✅ No notifications were scheduled to cancel.');
-      return true;
-    } else {
-      alert('Error: ' + (error instanceof Error ? error.message : String(error)));
-      return false;
-    }
+    alert('Error: ' + error);
+    return false;
   }
 };
 
@@ -201,9 +165,14 @@ export const getPendingNotifications = async () => {
     if (pending.notifications.length === 0) {
       alert('📋 No pending notifications found.');
     } else {
-      const notificationDetails = pending.notifications.map(notif => 
-        `ID: ${notif.id}, Title: ${notif.title}`
-      ).join('\n');
+      const notificationDetails = pending.notifications.map(notif => {
+        let details = `ID: ${notif.id}, Title: "${notif.title}"`;
+        if (notif.schedule?.at) {
+          const time = new Date(notif.schedule.at);
+          details += `, Time: ${time.toLocaleTimeString()}`;
+        }
+        return details;
+      }).join('\n');
       
       alert(`📋 Found ${pending.notifications.length} pending notification(s):\n\n${notificationDetails}`);
     }
@@ -216,25 +185,31 @@ export const getPendingNotifications = async () => {
   }
 };
 
-export const checkNotificationSettings = async () => {
-  try {
-    const channels = await LocalNotifications.listChannels();
-    const permissions = await LocalNotifications.checkPermissions();
-    const pending = await LocalNotifications.getPending();
-    
-    console.log('🔧 ALL Notification Channels:');
-    channels.channels.forEach(channel => {
-      console.log(`- ${channel.id}: ${channel.name} (Importance: ${channel.importance})`);
-    });
-    
-    return {
-      channels: channels.channels,
-      permissions,
-      pending: pending.notifications,
-      platform: Capacitor.getPlatform(),
-    };
-  } catch (error) {
-    console.error('Error checking notification settings:', error);
-    return null;
+export const recreateChannelWithSound = async () => {
+  if (Capacitor.getPlatform() === 'android') {
+    try {
+      console.log('🔄 Force recreating MAIN channel with sound...');
+      
+      await LocalNotifications.createChannel({
+        id: CHANNEL_ID,
+        name: 'Mood Reminders URGENT',
+        description: 'Urgent mood reminders with sound',
+        importance: 5,
+        vibration: true,
+        visibility: 1,
+        lights: true,
+        lightColor: '#FF0000',
+        sound: 'default'
+      });
+      
+      console.log('✅ MAIN channel recreated with sound:', CHANNEL_ID);
+      alert('✅ Main notification channel recreated WITH SOUND!');
+      return true;
+    } catch (error) {
+      console.error('❌ Error recreating main channel:', error);
+      alert('Error recreating main channel: ' + error);
+      return false;
+    }
   }
+  return false;
 };
