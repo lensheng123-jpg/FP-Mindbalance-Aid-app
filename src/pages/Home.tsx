@@ -6,13 +6,10 @@ import { useUserStatus } from "../theme/useUserStatus";
 import { useTheme } from "../theme/ThemeContext"; // ADD THIS IMPORT
 import { 
   scheduleDailyReminder, 
-  testNotification, 
   cancelAllNotifications, 
   getPendingNotifications,
-  checkNotificationSettings,
-  recreateChannelWithSound
 } from "../Services/NotificationService";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AddMood from "../components/AddMood";
 import MoodList from "../components/MoodList";
 import MoodTrendChart from "../components/MoodTrendChart";
@@ -32,7 +29,6 @@ export default function Home() {
   const { currentTheme } = useTheme(); // ADD THIS HOOK
   const [loading, setLoading] = useState(false);
   const [showSoundAlert, setShowSoundAlert] = useState(false);
-  const [ setNotificationSettings] = useState<any>(null);
   
 
   // Function to get theme colors based on current theme
@@ -49,15 +45,6 @@ export default function Home() {
 
   const themeColors = getThemeColors();
 
-  useEffect(() => {
-    console.log('🏠 Home component - User:', user?.email, 'IsPro:', isPro, 'UserStatus:', userStatus, 'Theme:', currentTheme);
-    
-    const checkSettings = async () => {
-      const settings = await checkNotificationSettings();
-      setNotificationSettings(settings);
-    };
-    checkSettings();
-  }, [user, isPro, userStatus, currentTheme]);
 
   const handleLogout = async () => {
     try {
@@ -77,22 +64,6 @@ const navigateToMindfulness = () => {
   history.push('/mindfulness');
 };
 
-
-
-  const handleTestNotification = async () => {
-    setLoading(true);
-    try {
-      await testNotification();
-      
-      if (!isWeb() && Capacitor.getPlatform() === 'android') {
-        setTimeout(() => setShowSoundAlert(true), 2000);
-      }
-    } catch (error) {
-      console.error('Test notification error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleScheduleReminder = async () => {
     setLoading(true);
@@ -122,18 +93,6 @@ const navigateToMindfulness = () => {
       await cancelAllNotifications();
     } catch (error) {
       console.error('Cancel all error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  const handleFixSoundChannels = async () => {
-    setLoading(true);
-    try {
-      await recreateChannelWithSound();
-    } catch (error) {
-      console.error('Fix sound channels error:', error);
     } finally {
       setLoading(false);
     }
@@ -398,104 +357,77 @@ const navigateToMindfulness = () => {
           </IonCardContent>
         </IonCard>
 
-        {/* Notification Testing Section */}
-        <IonCard style={{ 
-          background: isWeb() ? '#fffbf0' : '#f0f9ff',
-          marginBottom: '20px',
-          border: `2px solid ${isWeb() ? '#ffecb5' : '#b3e0ff'}`
-        }}>
-          <IonCardHeader>
-            <IonCardTitle style={{ 
-              fontSize: '1.1rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              🔔 Notification Testing/Setting {loading && <IonSpinner name="crescent" />}
-            </IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            <div style={{ marginBottom: '15px' }}>
-              <p style={{ 
-                color: isWeb() ? '#856404' : '#055160', 
-                fontSize: '0.9rem',
-                fontWeight: '500',
-                margin: '0 0 8px 0'
-              }}>
-                {platformText} Detected
-              </p>
-              {isWeb() ? (
-                <p style={{ color: '#856404', fontSize: '0.8rem', margin: 0 }}>
-                  ⚠️ Notifications work best on mobile devices with full sound support.
-                </p>
-              ) : (
-                <p style={{ color: '#055160', fontSize: '0.8rem', margin: 0 }}>
-                  ✅ Notifications configured for Android with sound & vibration.
-                </p>
-              )}
-            </div>
+<IonCard style={{ 
+  background: isWeb() ? '#fffbf0' : '#f0f9ff',
+  marginBottom: '20px',
+  border: `2px solid ${isWeb() ? '#ffecb5' : '#b3e0ff'}`
+}}>
+  <IonCardHeader>
+    <IonCardTitle style={{ 
+      fontSize: '1.1rem',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }}>
+      🔔 Notification Settings {loading && <IonSpinner name="crescent" />}
+    </IonCardTitle>
+  </IonCardHeader>
+  <IonCardContent>
+    <div style={{ marginBottom: '15px' }}>
+      <p style={{ 
+        color: isWeb() ? '#856404' : '#055160', 
+        fontSize: '0.9rem',
+        fontWeight: '500',
+        margin: '0 0 8px 0'
+      }}>
+        {platformText} Detected
+      </p>
+      {isWeb() ? (
+        <p style={{ color: '#856404', fontSize: '0.8rem', margin: 0 }}>
+          ⚠️ Notifications work best on mobile devices.
+        </p>
+      ) : (
+        <p style={{ color: '#055160', fontSize: '0.8rem', margin: 0 }}>
+          ✅ Notifications configured for Android with sound & vibration.
+        </p>
+      )}
+    </div>
 
-            {/* Sound Fix Button for Android */}
-            {!isWeb() && (
-              <IonButton 
-                expand="block" 
-                size="small" 
-                onClick={handleFixSoundChannels}
-                color="warning"
-                style={{ marginBottom: '10px', fontSize: '0.8rem' }}
-                disabled={loading}
-              >
-                🔧 Fix Sound Channels
-              </IonButton>
-            )}
-            
-            <IonButton 
-              expand="block" 
-              size="small" 
-              onClick={handleTestNotification}
-              color={isWeb() ? 'warning' : 'success'}
-              style={{ marginBottom: '8px', fontSize: '0.8rem' }}
-              disabled={loading}
-            >
-              {isWeb() ? '🔕 Test Notification' : '🔊 Test Notification'}
-            </IonButton>
-            
-            <IonButton 
-              expand="block" 
-              size="small" 
-              onClick={handleScheduleReminder}
-              color="medium"
-              style={{ marginBottom: '8px', fontSize: '0.8rem' }}
-              disabled={loading}
-            >
-              📅 Schedule Daily (7 PM)
-            </IonButton>
-            
-            <IonButton 
-              expand="block" 
-              size="small" 
-              onClick={handleCheckPending}
-              color="medium"
-              style={{ marginBottom: '8px', fontSize: '0.8rem' }}
-              disabled={loading}
-            >
-              📋 Check Pending
-            </IonButton>
-            
-            <IonButton 
-              expand="block" 
-              size="small" 
-              onClick={handleCancelAll}
-              color="danger"
-              style={{ marginBottom: '8px', fontSize: '0.8rem' }}
-              disabled={loading}
-            >
-              🗑️ Cancel All
-            </IonButton>
-            
-            
-          </IonCardContent>
-        </IonCard>
+    
+<IonButton 
+  expand="block" 
+  size="small" 
+  onClick={handleScheduleReminder}
+  color="medium"
+  style={{ marginBottom: '8px', fontSize: '0.8rem' }}
+  disabled={loading}
+>
+  ⏰ Set Daily Reminder 
+</IonButton>
+    
+    <IonButton 
+      expand="block" 
+      size="small" 
+      onClick={handleCheckPending}
+      color="medium"
+      style={{ marginBottom: '8px', fontSize: '0.8rem' }}
+      disabled={loading}
+    >
+      📋 Check Scheduled
+    </IonButton>
+    
+    <IonButton 
+      expand="block" 
+      size="small" 
+      onClick={handleCancelAll}
+      color="danger"
+      style={{ marginBottom: '8px', fontSize: '0.8rem' }}
+      disabled={loading}
+    >
+      🗑️ Cancel All
+    </IonButton>
+  </IonCardContent>
+</IonCard>
 
         {/* Sound Troubleshooting Alert */}
         <IonAlert
@@ -510,9 +442,7 @@ const navigateToMindfulness = () => {
             3. Check device volume
             4. Ensure Do Not Disturb is off
 
-            For Pixel 6 API 33 emulator:
-            • Check emulator audio settings
-            • Device volume might be muted
+            If issues persist, check your device notification settings for this app.
           `}
           buttons={['OK, Got it!']}
         />
