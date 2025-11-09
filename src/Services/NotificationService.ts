@@ -4,7 +4,6 @@ import { Capacitor } from '@capacitor/core';
 // Use a consistent channel ID
 const CHANNEL_ID = 'mood-reminders-sound';
 
-// FIXED: More aggressive channel creation
 const createNotificationChannel = async () => {
   if (Capacitor.getPlatform() === 'android') {
     try {
@@ -33,22 +32,7 @@ const createNotificationChannel = async () => {
       });
       
       console.log('✅ Notification channel created WITH SOUND');
-      
-      // Test the channel immediately
-      await LocalNotifications.schedule({
-        notifications: [
-          {
-            title: 'Channel Test 🔊',
-            body: 'Testing sound channel!',
-            id: 777,
-            schedule: { at: new Date(Date.now() + 3000) }, // 3 seconds
-            channelId: CHANNEL_ID,
-            sound: 'default',
-            smallIcon: 'ic_stat_icon'
-          }
-        ]
-      });
-      
+            
     } catch (error) {
       console.error('❌ Error creating notification channel:', error);
     }
@@ -81,9 +65,9 @@ export const scheduleDailyReminder = async () => {
 
     // Calculate time 2 minutes from now
     const now = new Date();
-    const inOneMinute = new Date(now.getTime() + 60000); // 1 minute
+    const inTwoMinutes = new Date(now.getTime() + 120000); // 2 minutes
     
-    const scheduledTime = inOneMinute.toLocaleTimeString([], { 
+    const scheduledTime = inTwoMinutes.toLocaleTimeString([], { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
@@ -96,7 +80,7 @@ export const scheduleDailyReminder = async () => {
           body: 'Time to log your daily mood! 📊',
           id: 1,
           schedule: { 
-            at: inOneMinute, // Exact time for first notification
+            at: inTwoMinutes, // Exact time for first notification
             every: 'day' // Repeat daily from that time
           },
           channelId: CHANNEL_ID,
@@ -118,7 +102,7 @@ export const scheduleDailyReminder = async () => {
     const isScheduled = pending.notifications.some(notif => notif.id === 1);
     
     if (isScheduled) {
-      alert(`✅ Daily reminder scheduled!\n\nFirst notification in 1 minute (at ${scheduledTime}), then daily at that same time.\n\n• Keep app open or in background\n• Check device volume\n• Wait exactly 1 minute`);
+      alert(`✅ Daily reminder scheduled!\n\nFirst notification in 2 minutes (at ${scheduledTime}), then daily at that same time.\n\n• Keep app open or in background\n• Check device volume\n• Wait exactly 2 minutes`);
     } else {
       alert('❌ Failed to schedule. Try "Cancel All" first, then schedule again.');
     }
@@ -136,7 +120,7 @@ export const cancelAllNotifications = async () => {
     console.log('🗑️ Cancelling all notifications...');
     
     await LocalNotifications.cancel({
-      notifications: [{ id: 1 }, { id: 777 }]
+      notifications: [{ id: 1 }] // Removed ID 777 since test notification is gone
     });
     
     // Wait and verify
