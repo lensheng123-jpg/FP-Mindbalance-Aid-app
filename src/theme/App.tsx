@@ -17,55 +17,55 @@ setupIonicReact();
 
 // ✅ Protected Routes using Auth Context
 const ProtectedRoute: React.FC<{ component: React.FC; path: string }> = ({
-  component: Component,
-  path,
+component: Component,
+path,
 }) => {
-  const { user } = useAuth();
-  return (
-    <Route
-      exact
-      path={path}
-      render={() => (user ? <Component /> : <Redirect to="/login" />)}
-    />
-  );
+const { user } = useAuth();
+return (
+<Route
+exact
+path={path}
+render={() => (user ? <Component /> : <Redirect to="/login" />)}
+/>
+);
 };
 
 const AppRouter: React.FC = () => {
-  const { user } = useAuth();
+const { user } = useAuth();
 
-  return (
-    <IonReactRouter>
-      <IonRouterOutlet>
-        {/* Public Route */}
-        <Route exact path="/login">
-          <Login />
-        </Route>
+return (
+<IonReactRouter>
+<IonRouterOutlet>
+{/* Public Route */}
+<Route exact path="/login">
+<Login />
+</Route>
 
-        {/* Protected Routes */}
-        <ProtectedRoute path="/home" component={Home} />
-        <ProtectedRoute path="/mindfulness" component={Mindfulness} />
-        <ProtectedRoute path="/themes" component={CustomThemes} />
-        <ProtectedRoute path="/support" component={PrioritySupport} />
+{/* Protected Routes */}
+<ProtectedRoute path="/home" component={Home} />
+<ProtectedRoute path="/mindfulness" component={Mindfulness} />
+<ProtectedRoute path="/themes" component={CustomThemes} />
+<ProtectedRoute path="/support" component={PrioritySupport} />
 
-        {/* Redirect root path */}
-        <Route exact path="/">
-          <Redirect to={user ? "/home" : "/login"} />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
-  );
+{/* Redirect root path */}
+<Route exact path="/">
+<Redirect to={user ? "/home" : "/login"} />
+</Route>
+</IonRouterOutlet>
+</IonReactRouter>
+);
 };
 
 const App: React.FC = () => (
-  <IonApp>
-    <AuthProvider>
-      <MonetizationProvider>
-        <ThemeProvider>
-          <AppRouter />
-        </ThemeProvider>
-      </MonetizationProvider>
-    </AuthProvider>
-  </IonApp>
+<IonApp>
+<AuthProvider>
+<MonetizationProvider>
+<ThemeProvider>
+<AppRouter />
+</ThemeProvider>
+</MonetizationProvider>
+</AuthProvider>
+</IonApp>
 );
 
 export default App;
