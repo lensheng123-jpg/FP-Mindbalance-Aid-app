@@ -147,13 +147,17 @@ export const getPendingNotifications = async () => {
     console.log('Pending notifications:', pending.notifications);
     
     if (pending.notifications.length === 0) {
-      alert('📋 No pending notifications found.');
+      alert('📋 No pending notifications found.\n\nThis is normal if:\n• Notification already fired today\n• Daily repeat is internally scheduled\n•');
     } else {
       const notificationDetails = pending.notifications.map(notif => {
         let details = `ID: ${notif.id}, Title: "${notif.title}"`;
         if (notif.schedule?.at) {
           const time = new Date(notif.schedule.at);
           details += `, Time: ${time.toLocaleTimeString()}`;
+          details += `, Date: ${time.toLocaleDateString()}`;
+        }
+        if (notif.schedule?.every) {
+          details += `, Repeats: ${notif.schedule.every}`;
         }
         return details;
       }).join('\n');
