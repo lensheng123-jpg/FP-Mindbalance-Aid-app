@@ -6,8 +6,8 @@ import { useUserStatus } from "../theme/useUserStatus";
 import { useTheme } from "../theme/ThemeContext"; // ADD THIS IMPORT
 import { 
   scheduleDailyReminder, 
-  cancelAllNotifications, 
-  getPendingNotifications,
+  cancelUserNotifications, 
+ getUserPendingNotifications,
 } from "../Services/NotificationService";
 import { useState } from "react";
 import AddMood from "../components/AddMood";
@@ -65,10 +65,18 @@ const navigateToMindfulness = () => {
 };
 
 
+  // In your Home.tsx, update the handlers:
+
+ // FIXED: Added null checks for user.uid
   const handleScheduleReminder = async () => {
+    if (!user || !user.uid) {
+      alert('❌ User not found. Please log in again.');
+      return;
+    }
+    
     setLoading(true);
     try {
-      await scheduleDailyReminder();
+      await scheduleDailyReminder(user.uid);
     } catch (error) {
       console.error('Schedule reminder error:', error);
     } finally {
@@ -76,10 +84,16 @@ const navigateToMindfulness = () => {
     }
   };
 
-  const handleCheckPending = async () => {
+
+ const handleCheckPending = async () => {
+    if (!user || !user.uid) {
+      alert('❌ User not found. Please log in again.');
+      return;
+    }
+    
     setLoading(true);
     try {
-      await getPendingNotifications();
+      await getUserPendingNotifications(user.uid);
     } catch (error) {
       console.error('Check pending error:', error);
     } finally {
@@ -88,9 +102,14 @@ const navigateToMindfulness = () => {
   };
 
   const handleCancelAll = async () => {
+    if (!user || !user.uid) {
+      alert('❌ User not found. Please log in again.');
+      return;
+    }
+    
     setLoading(true);
     try {
-      await cancelAllNotifications();
+      await cancelUserNotifications(user.uid);
     } catch (error) {
       console.error('Cancel all error:', error);
     } finally {
