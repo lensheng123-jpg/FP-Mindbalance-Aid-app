@@ -18,7 +18,7 @@ MindBalance Aid helps users monitor their daily mood, stress levels, and mindful
 - **Visual Analytics Dashboard** with charts and trends
 - **Firebase Authentication** for secure user accounts
 - **Native Camera Integration** for photo journaling
-- **Local Notifications** for daily reminders
+- **Local Notifications** for customizable daily reminders
 - **Custom Themes** (Pro feature)
 - **Priority Support** (Pro feature)
 - **Offline Capability** with Ionic Storage
