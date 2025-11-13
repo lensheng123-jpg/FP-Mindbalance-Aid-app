@@ -24,6 +24,7 @@ for (const envVar of requiredEnvVars) {
   }
 }
 
+//Initialize Firebase
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
