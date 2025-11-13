@@ -104,19 +104,17 @@ Unlimited History: Access to all past entries
 Pro status is simulated using Ionic Storage and persists per user account.
 
 🎯 Native Features
-Camera API
-Take photos to attach to mood entries
 
-Image upload to Cloudinary
+Camera API 
+Take photos to attach to mood entries 
+Image upload to Cloudinary 
+Photo editing and removal 
 
-Photo editing and removal
-
-Local Notifications
-Daily reminders at 7 PM for mood logging
-
-Custom notification channel with sound
-
-Permission handling and testing
+Local Notifications 
+Customizable daily reminders for mood logging 
+User-specific notification channels with sound 
+Comprehensive permission handling and testing 
+First reminder in 2 minutes for testing, then daily at the same time
 
 👥 Development Team
 EMANUEL PRESTON A/L VINCENT - BIT_B2201F-2409001
