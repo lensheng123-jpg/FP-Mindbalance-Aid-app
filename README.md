@@ -105,12 +105,12 @@ Pro status is simulated using Ionic Storage and persists per user account.
 
 🎯 Native Features
 
-Camera API 
+Camera API: 
 Take photos to attach to mood entries 
 Image upload to Cloudinary 
 Photo editing and removal 
 
-Local Notifications 
+Local Notifications: 
 Customizable daily reminders for mood logging 
 User-specific notification channels with sound 
 Comprehensive permission handling and testing 
