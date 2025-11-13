@@ -69,6 +69,7 @@ ionic capacitor build android
 ionic capacitor run android
 
 🔐 Firebase Security Rules
+
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
