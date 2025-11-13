@@ -51,6 +51,7 @@ MindBalance Aid helps users monitor their daily mood, stress levels, and mindful
 2. npm install
 
 3.Configure Firebase
+
 Create a Firebase project
 
 Enable Authentication (Email/Password) and Firestore
