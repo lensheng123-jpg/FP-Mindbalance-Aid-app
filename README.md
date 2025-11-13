@@ -95,7 +95,8 @@ service cloud.firestore {
   }
 }
 
-💰 Monetization Strategy
+💰 Monetization Strategy:
+
 The app implements a one-time purchase Pro version with:
 
 Custom Themes: Multiple color schemes
