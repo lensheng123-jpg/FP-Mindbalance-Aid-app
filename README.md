@@ -50,7 +50,7 @@ MindBalance Aid helps users monitor their daily mood, stress levels, and mindful
 
 2. npm install
 
-3.Configure Firebase
+3.Configure Firebase:
 
 Create a Firebase project
 
@@ -58,13 +58,14 @@ Enable Authentication (Email/Password) and Firestore
 
 Copy your config to src/firebaseConfig.ts
 
-4.Configure Cloudinary (for photo storage)
+4.Configure Cloudinary (for photo storage):
 
 Create a Cloudinary account
 
 Update CLOUD_NAME and UPLOAD_PRESET in src/services/CameraService.ts
 
-Mobile Build;
+Mobile Build:
+
 ionic capacitor add android
 ionic capacitor build android
 ionic capacitor run android
