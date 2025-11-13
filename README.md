@@ -67,7 +67,9 @@ Update CLOUD_NAME and UPLOAD_PRESET in src/services/CameraService.ts
 Mobile Build:
 
 ionic capacitor add android
+
 ionic capacitor build android
+
 ionic capacitor run android
 
 🔐 Firebase Security Rules
