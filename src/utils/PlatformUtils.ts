@@ -11,7 +11,3 @@ export const isMobile = (): boolean => {
 export const isAndroid = (): boolean => {
   return Capacitor.getPlatform() === 'android';
 };
-
-export const isIOS = (): boolean => {
-  return Capacitor.getPlatform() === 'ios';
-};
