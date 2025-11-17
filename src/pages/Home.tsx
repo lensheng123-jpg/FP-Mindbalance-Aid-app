@@ -23,7 +23,7 @@ import { auth } from "../firebaseConfig";
 
 export default function Home() {
 const history = useHistory();
-const { user, logout } = useAuth();
+const { user} = useAuth();
 const { isPro } = useMonetization();
 const { isNewUser, userStatus } = useUserStatus();
 const { currentTheme } = useTheme(); // ADD THIS HOOK
